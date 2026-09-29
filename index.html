@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orientation Book Games</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -12,27 +13,32 @@
         body {
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            background-color: #111827; /* Tailwind gray-900 */
+            color: #f9fafb; /* Tailwind gray-50 */
         }
         h1, h2, h3, h4, .font-heading {
             font-family: 'Montserrat', sans-serif;
         }
 
-        /* Hide elements by default for SPA routing */
+        /* View routing classes */
         .view-section {
             display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
         }
         .view-section.active {
             display: flex;
+            opacity: 1;
         }
 
         /* 3D Flip Card CSS */
         .flip-container {
-            perspective: 1000px;
+            perspective: 1200px;
             width: 100%;
             height: 100%;
         }
         .flipper {
-            transition: 0.6s;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
             transform-style: preserve-3d;
             position: relative;
             width: 100%;
@@ -41,10 +47,12 @@
         .flipper.flipped {
             transform: rotateY(180deg);
         }
-        /* No transition when resetting to front instantly */
-        .flipper.no-transition {
+        
+        /* Utility class to snap back instantly without seeing the animation */
+        .no-transition {
             transition: none !important;
         }
+        
         .front, .back {
             backface-visibility: hidden;
             position: absolute;
@@ -65,152 +73,156 @@
             transform: rotateY(180deg);
         }
 
-        /* Scrollbar hiding for cleaner look */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        /* Hide scrollbars for cleaner card look */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 h-screen w-full overflow-hidden flex flex-col">
+<body class="h-screen w-full overflow-hidden flex flex-col">
 
-    <div id="home-view" class="view-section active flex-col justify-center items-center h-full w-full p-6 bg-gradient-to-br from-indigo-500 to-purple-700 text-white relative">
-        <div class="max-w-2xl text-center z-10">
-            <i class="fa-solid fa-book-open-reader text-6xl mb-6 shadow-sm"></i>
-            <h1 class="text-4xl md:text-6xl font-black mb-4 uppercase tracking-tighter shadow-sm">Orientation<br>Icebreakers</h1>
-            <p class="text-lg md:text-xl font-medium mb-12 opacity-90">Choose a game to get the crowd engaged.</p>
+    <div id="home-view" class="view-section active flex-col justify-center items-center h-full w-full p-6 relative">
+        <div class="max-w-3xl text-center z-10 space-y-8">
+            <div>
+                <i class="fa-solid fa-book-open-reader text-6xl mb-6 text-indigo-400"></i>
+                <h1 class="text-5xl md:text-7xl font-black mb-4 uppercase tracking-tighter text-white drop-shadow-lg">
+                    Orientation<br>Games
+                </h1>
+                <p class="text-lg md:text-2xl font-medium text-gray-400">Choose your interactive session.</p>
+            </div>
             
-            <div class="flex flex-col md:flex-row gap-6 justify-center">
-                <button onclick="app.switchView('tinder-view')" class="group relative bg-white text-rose-600 font-bold text-xl py-6 px-8 rounded-2xl shadow-xl hover:-translate-y-1 transition-all duration-300 w-full md:w-64 flex flex-col items-center gap-3">
-                    <i class="fa-solid fa-fire text-4xl group-hover:scale-110 transition-transform"></i>
-                    Book Tinder
+            <div class="flex flex-col md:flex-row gap-6 justify-center w-full max-w-2xl mx-auto mt-12">
+                <button id="btn-home-tinder" class="flex-1 group relative bg-gray-800 text-rose-500 hover:text-white hover:bg-rose-600 font-bold text-2xl py-8 px-6 rounded-2xl shadow-xl transition-all duration-300 flex flex-col items-center gap-4 border border-gray-700">
+                    <i class="fa-solid fa-fire text-5xl group-hover:scale-110 transition-transform"></i>
+                    <span>Tinder for Books</span>
                 </button>
-                <button onclick="app.switchView('quiz-view')" class="group relative bg-gray-900 text-yellow-400 font-bold text-xl py-6 px-8 rounded-2xl shadow-xl hover:-translate-y-1 transition-all duration-300 w-full md:w-64 flex flex-col items-center gap-3 border-2 border-yellow-400">
-                    <i class="fa-solid fa-bolt text-4xl group-hover:scale-110 transition-transform"></i>
-                    Clickbait Quizzes
+                <button id="btn-home-quiz" class="flex-1 group relative bg-gray-800 text-yellow-400 hover:text-gray-900 hover:bg-yellow-400 font-bold text-2xl py-8 px-6 rounded-2xl shadow-xl transition-all duration-300 flex flex-col items-center gap-4 border border-gray-700">
+                    <i class="fa-solid fa-bolt text-5xl group-hover:scale-110 transition-transform"></i>
+                    <span>Clickbait Quiz</span>
                 </button>
             </div>
         </div>
-        <!-- Decorative bg elements -->
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
-            <div class="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl"></div>
-            <div class="absolute bottom-0 right-0 w-3/4 h-3/4 bg-blue-500 rounded-full mix-blend-overlay filter blur-3xl"></div>
+        
+        <!-- Background Effects -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-20 z-0">
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-indigo-500 rounded-full mix-blend-screen filter blur-[100px]"></div>
+            <div class="absolute bottom-0 right-0 w-3/4 h-3/4 bg-purple-900 rounded-full mix-blend-screen filter blur-[120px]"></div>
         </div>
     </div>
 
-    <div id="tinder-view" class="view-section flex-col h-full w-full bg-gray-100">
+    <div id="tinder-view" class="view-section flex-col h-full w-full bg-gray-900">
         <!-- Header -->
-        <header class="flex justify-between items-center p-4 md:p-6 bg-white shadow-sm z-10 relative">
-            <button onclick="app.switchView('home-view')" class="text-gray-500 hover:text-gray-900 text-2xl px-4 py-2 rounded-full transition-colors bg-gray-100">
+        <header class="flex justify-between items-center p-4 md:p-6 border-b border-gray-800 z-10">
+            <button id="btn-tinder-back" class="text-gray-400 hover:text-white text-2xl w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 transition-colors">
                 <i class="fa-solid fa-arrow-left"></i>
             </button>
-            <div class="flex items-center gap-2 text-rose-500 font-heading font-black text-2xl tracking-tighter">
+            <div class="flex items-center gap-3 text-rose-500 font-heading font-black text-2xl tracking-tighter">
                 <i class="fa-solid fa-fire"></i> BOOK TINDER
             </div>
-            <div class="w-12"></div> <!-- Spacer for flex centering -->
+            <div class="w-12"></div> <!-- Spacer -->
         </header>
 
-        <!-- Card Area -->
-        <main class="flex-1 relative flex justify-center items-center p-4 md:p-8 overflow-hidden w-full max-w-3xl mx-auto">
+        <!-- Tinder Card Area -->
+        <main class="flex-1 relative flex justify-center items-center p-4 md:p-8 overflow-hidden w-full max-w-2xl mx-auto">
             <div class="flip-container h-[65vh] min-h-[450px] max-h-[700px] w-full">
                 <div id="tinder-flipper" class="flipper shadow-2xl rounded-3xl">
                     
-                    <!-- FRONT OF CARD (DATING PROFILE) -->
-                    <div class="front bg-white p-6 md:p-10 border-t-8 border-rose-500 overflow-y-auto no-scrollbar">
-                        <div class="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
-                            <div class="w-20 h-20 md:w-28 md:h-28 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-500 text-4xl shrink-0">
+                    <!-- FRONT: DATING PROFILE -->
+                    <div class="front bg-gray-800 p-6 md:p-10 border-t-8 border-rose-500 overflow-y-auto no-scrollbar shadow-2xl">
+                        <div class="flex items-center gap-6 mb-8 pb-8 border-b border-gray-700">
+                            <div class="w-20 h-20 md:w-28 md:h-28 rounded-full bg-gray-700 flex items-center justify-center text-rose-400 text-4xl shrink-0 border-2 border-gray-600">
                                 <i class="fa-solid fa-user"></i>
                             </div>
                             <div>
-                                <h2 id="t-name" class="text-3xl md:text-5xl font-black text-gray-900 mb-1 leading-none">Name, Age</h2>
-                                <p id="t-job" class="text-gray-500 font-medium md:text-xl"><i class="fa-solid fa-briefcase mr-2"></i>Occupation</p>
+                                <h2 id="t-name" class="text-4xl md:text-5xl font-black text-white mb-2 leading-none">Name, Age</h2>
+                                <p id="t-job" class="text-gray-400 font-medium md:text-xl"><i class="fa-solid fa-briefcase mr-2"></i>Occupation</p>
                             </div>
                         </div>
                         
-                        <div class="flex-1 space-y-6">
+                        <div class="flex-1 space-y-8">
                             <div>
-                                <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 font-bold text-xs rounded-full uppercase tracking-wider mb-2">The Bio</span>
-                                <p id="t-bio" class="text-lg md:text-xl text-gray-700 font-medium leading-snug">Bio goes here</p>
+                                <span class="inline-block px-4 py-1.5 bg-gray-700 text-gray-300 font-bold text-xs rounded-full uppercase tracking-wider mb-3">The Bio</span>
+                                <p id="t-bio" class="text-xl md:text-2xl text-gray-200 font-medium leading-snug">Bio</p>
                             </div>
                             <div>
-                                <span class="inline-block px-3 py-1 bg-rose-100 text-rose-700 font-bold text-xs rounded-full uppercase tracking-wider mb-2">Major Red Flag</span>
-                                <p id="t-redflag" class="text-lg md:text-xl text-gray-700 font-medium leading-snug">Red flag goes here</p>
+                                <span class="inline-block px-4 py-1.5 bg-rose-900 text-rose-300 font-bold text-xs rounded-full uppercase tracking-wider mb-3 border border-rose-800">Major Red Flag</span>
+                                <p id="t-redflag" class="text-xl md:text-2xl text-rose-100 font-medium leading-snug">Red flag</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- BACK OF CARD (BOOK REVEAL) -->
-                    <div class="back bg-white border-t-8 border-green-500 p-6 md:p-10 flex flex-col justify-center items-center text-center">
-                        <span class="inline-block px-4 py-1.5 bg-green-100 text-green-700 font-bold text-sm rounded-full uppercase tracking-wider mb-6">
+                    <!-- BACK: BOOK REVEAL -->
+                    <div class="back bg-gray-800 border-t-8 border-green-500 p-6 md:p-10 flex flex-col justify-center items-center text-center shadow-2xl">
+                        <span class="inline-block px-6 py-2 bg-green-900 border border-green-700 text-green-300 font-bold text-sm rounded-full uppercase tracking-wider mb-8 shadow-lg shadow-green-900/50">
                             <i class="fa-solid fa-check mr-2"></i>It's a Match!
                         </span>
-                        <div class="w-32 h-48 md:w-48 md:h-72 bg-gray-200 rounded-lg shadow-inner mb-6 overflow-hidden relative">
-                            <!-- Using a placeholder pattern for books since we can't load external images reliably without CORS/broken links -->
-                            <div class="absolute inset-0 bg-gradient-to-tr from-indigo-900 to-blue-600 flex items-center justify-center p-4">
-                                <i class="fa-solid fa-book text-white text-opacity-30 text-6xl"></i>
+                        <div class="w-40 h-56 md:w-56 md:h-80 bg-gray-700 rounded-lg shadow-inner mb-8 overflow-hidden relative border border-gray-600">
+                            <div class="absolute inset-0 bg-gradient-to-tr from-gray-900 to-gray-600 flex items-center justify-center p-4">
+                                <i class="fa-solid fa-book-journal-whills text-white text-opacity-20 text-7xl"></i>
                             </div>
                         </div>
-                        <h2 id="t-title" class="text-3xl md:text-5xl font-black text-gray-900 mb-2 leading-tight">Book Title</h2>
-                        <p id="t-author" class="text-xl md:text-2xl text-gray-500 font-medium">by Author</p>
+                        <h2 id="t-title" class="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">Book Title</h2>
+                        <p id="t-author" class="text-2xl md:text-3xl text-gray-400 font-medium">by Author</p>
                     </div>
 
                 </div>
             </div>
         </main>
 
-        <!-- Action Controls -->
-        <footer class="p-4 md:p-8 bg-gray-100 flex justify-center gap-6 md:gap-12 pb-8">
-            <button onclick="app.tinderAction('pass')" class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] text-rose-500 text-4xl flex items-center justify-center hover:scale-110 hover:bg-rose-50 transition-all active:scale-95 border border-gray-100">
+        <!-- Tinder Controls -->
+        <footer class="p-4 md:p-8 flex justify-center items-center gap-6 md:gap-12 pb-12">
+            <!-- Swipe Left (Pass / Next) -->
+            <button id="btn-tinder-left" class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gray-800 shadow-xl text-gray-500 hover:text-rose-500 hover:bg-gray-700 text-4xl flex items-center justify-center transition-all active:scale-90 border border-gray-700">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <button onclick="app.nextTinder()" class="w-16 h-16 md:w-20 md:h-20 self-center rounded-full bg-gray-800 text-white shadow-lg text-2xl flex items-center justify-center hover:scale-110 hover:bg-gray-700 transition-all active:scale-95 border border-gray-100">
-                <i class="fa-solid fa-forward-step"></i>
-            </button>
-            <button onclick="app.tinderAction('read')" class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] text-green-500 text-4xl flex items-center justify-center hover:scale-110 hover:bg-green-50 transition-all active:scale-95 border border-gray-100">
+            
+            <!-- Swipe Right (Match / Flip) -->
+            <button id="btn-tinder-right" class="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gray-800 shadow-xl text-green-500 hover:bg-gray-700 text-5xl flex items-center justify-center transition-all active:scale-90 border border-gray-700">
                 <i class="fa-solid fa-heart"></i>
+            </button>
+            
+            <!-- Next Button (Appears to advance after reading the back) -->
+            <button id="btn-tinder-next" class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gray-800 shadow-xl text-gray-400 hover:text-white hover:bg-gray-700 text-3xl flex items-center justify-center transition-all active:scale-90 border border-gray-700">
+                <i class="fa-solid fa-arrow-right"></i>
             </button>
         </footer>
     </div>
 
     <div id="quiz-view" class="view-section flex-col h-full w-full bg-gray-900">
         <!-- Header -->
-        <header class="flex justify-between items-center p-4 md:p-6 bg-gray-900 border-b border-gray-800 shadow-sm z-10 relative">
-            <button onclick="app.switchView('home-view')" class="text-gray-400 hover:text-white text-2xl px-4 py-2 rounded-full transition-colors bg-gray-800">
+        <header class="flex justify-between items-center p-4 md:p-6 border-b border-gray-800 z-10">
+            <button id="btn-quiz-back" class="text-gray-400 hover:text-white text-2xl w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 transition-colors">
                 <i class="fa-solid fa-arrow-left"></i>
             </button>
-            <div class="flex items-center gap-2 text-yellow-400 font-heading font-black text-2xl tracking-tighter">
+            <div class="flex items-center gap-3 text-yellow-400 font-heading font-black text-2xl tracking-tighter">
                 <i class="fa-solid fa-bolt"></i> CLICKBAIT QUIZ
             </div>
             <div class="w-12"></div>
         </header>
 
-        <!-- Card Area -->
+        <!-- Clickbait Card Area -->
         <main class="flex-1 relative flex justify-center items-center p-4 md:p-8 overflow-hidden w-full max-w-4xl mx-auto">
             <div class="flip-container h-[60vh] min-h-[400px] w-full">
-                <div id="quiz-flipper" class="flipper rounded-3xl">
+                <div id="quiz-flipper" class="flipper rounded-3xl shadow-2xl">
                     
-                    <!-- FRONT OF CARD (CLICKBAIT QUESTION) -->
+                    <!-- FRONT: CLICKBAIT QUESTION -->
                     <div class="front bg-gray-800 border-4 border-yellow-400 p-8 md:p-12 flex flex-col justify-center items-center text-center">
-                        <span class="inline-block px-4 py-1.5 bg-yellow-400 text-gray-900 font-bold text-sm rounded-full uppercase tracking-widest mb-8">
+                        <span class="inline-block px-6 py-2 bg-yellow-400 text-gray-900 font-black text-sm rounded-full uppercase tracking-widest mb-10 shadow-lg shadow-yellow-400/20">
                             Guess The Book
                         </span>
-                        <h2 id="q-clickbait" class="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight uppercase font-heading">
-                            CLICKBAIT TEXT GOES HERE AND IT IS VERY LOUD
+                        <h2 id="q-clickbait" class="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight uppercase font-heading drop-shadow-md">
+                            CLICKBAIT TEXT GOES HERE
                         </h2>
                     </div>
 
-                    <!-- BACK OF CARD (ANSWER) -->
-                    <div class="back bg-gray-100 border-4 border-gray-300 p-8 md:p-12 flex flex-col justify-center items-center text-center">
-                        <span class="inline-block px-4 py-1.5 bg-gray-300 text-gray-800 font-bold text-sm rounded-full uppercase tracking-widest mb-8">
+                    <!-- BACK: ANSWER -->
+                    <div class="back bg-gray-800 border-4 border-white p-8 md:p-12 flex flex-col justify-center items-center text-center">
+                        <span class="inline-block px-6 py-2 bg-white text-gray-900 font-black text-sm rounded-full uppercase tracking-widest mb-10">
                             The Answer
                         </span>
-                        <h2 id="q-title" class="text-4xl md:text-6xl font-black text-gray-900 mb-4 leading-tight">Book Title</h2>
-                        <p id="q-author" class="text-2xl md:text-3xl text-gray-600 font-medium mb-8">By Author</p>
+                        <h2 id="q-title" class="text-5xl md:text-7xl font-black text-yellow-400 mb-6 leading-tight drop-shadow-md">Book Title</h2>
+                        <p id="q-author" class="text-2xl md:text-4xl text-gray-300 font-medium mb-12">By Author</p>
                         
-                        <div class="text-green-600 text-6xl">
+                        <div class="text-white text-7xl opacity-50">
                             <i class="fa-solid fa-circle-check"></i>
                         </div>
                     </div>
@@ -219,187 +231,226 @@
             </div>
         </main>
 
-        <!-- Action Controls -->
-        <footer class="p-4 md:p-8 flex justify-center items-center gap-4 pb-8">
-            <button onclick="app.prevQuiz()" class="px-6 py-4 rounded-xl bg-gray-800 text-gray-300 font-bold hover:bg-gray-700 transition-colors text-xl">
+        <!-- Clickbait Controls -->
+        <footer class="p-4 md:p-8 flex justify-center items-center gap-4 pb-12 w-full max-w-2xl mx-auto">
+            <button id="btn-quiz-prev" class="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 flex items-center justify-center rounded-2xl bg-gray-800 border border-gray-700 text-gray-400 hover:text-white hover:bg-gray-700 transition-all text-2xl shadow-lg active:scale-90">
                 <i class="fa-solid fa-arrow-left"></i>
             </button>
-            <button onclick="app.toggleQuizFlip()" class="flex-1 max-w-xs py-4 px-8 bg-yellow-400 text-gray-900 font-black text-xl rounded-xl uppercase tracking-wider hover:bg-yellow-300 transition-colors active:scale-95 shadow-[0_0_20px_rgba(250,204,21,0.3)]">
+            <button id="btn-quiz-reveal" class="flex-1 py-5 px-6 bg-yellow-400 text-gray-900 font-black text-xl md:text-2xl rounded-2xl uppercase tracking-wider hover:bg-yellow-300 transition-all active:scale-95 shadow-[0_0_30px_rgba(250,204,21,0.2)]">
                 Reveal Answer
             </button>
-            <button onclick="app.nextQuiz()" class="px-6 py-4 rounded-xl bg-gray-800 text-gray-300 font-bold hover:bg-gray-700 transition-colors text-xl">
+            <button id="btn-quiz-next" class="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 flex items-center justify-center rounded-2xl bg-gray-800 border border-gray-700 text-gray-400 hover:text-white hover:bg-gray-700 transition-all text-2xl shadow-lg active:scale-90">
                 <i class="fa-solid fa-arrow-right"></i>
             </button>
         </footer>
     </div>
 
     <script>
-        const app = {
-            // Data stores
-            tinderData: [
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // --- STATE & DATA ---
+            const state = {
+                tinderIndex: 0,
+                quizIndex: 0,
+                isTinderFlipped: false,
+                isQuizFlipped: false
+            };
+
+            const tinderData = [
                 {
                     name: "Mark", age: "25", job: "Botanist / Space Pirate",
-                    bio: "Doing really long distance. Great at math, grows potatoes in space.",
-                    redFlag: "Complains about disco music non-stop.",
+                    bio: "Long distance, highly resourceful.",
+                    redFlag: "Hasn't showered in months, loves disco.",
                     title: "The Martian", author: "Andy Weir"
                 },
                 {
-                    name: "Amy", age: "32", job: "Trust Fund Kid / Quiz Writer",
+                    name: "Amy", age: "32", job: "Trust Fund Kid",
                     bio: "Total 'cool girl'. Loves elaborate anniversary treasure hunts.",
-                    redFlag: "Will literally frame you for murder.",
+                    redFlag: "Will frame you for murder.",
                     title: "Gone Girl", author: "Gillian Flynn"
                 },
                 {
                     name: "Richard", age: "19", job: "Classics Major",
-                    bio: "Looking to join an exclusive, tight-knit friend group. Loves wearing tweed.",
-                    redFlag: "Accidentally did a murder in the woods.",
+                    bio: "Looking to join an exclusive, tight-knit friend group. Loves tweed.",
+                    redFlag: "Accidental murder in the woods.",
                     title: "The Secret History", author: "Donna Tartt"
                 },
                 {
                     name: "Xaden", age: "21", job: "Military Cadet / Rebel",
                     bio: "Tall, dark, sarcastic, and plotting light treason.",
-                    redFlag: "Has a massive dragon that might eat you.",
+                    redFlag: "Aggressively large dragon.",
                     title: "Fourth Wing", author: "Rebecca Yarros"
                 }
-            ],
-            quizData: [
+            ];
+
+            const quizData = [
+                {
+                    clickbait: "Local man literally fights a giant whale and loses everything!",
+                    title: "Moby-Dick", author: "Herman Melville"
+                },
+                {
+                    clickbait: "Government worker rewrites history, you won't believe what happens in Room 101!",
+                    title: "1984", author: "George Orwell"
+                },
+                {
+                    clickbait: "Short guys take an incredibly long walking tour just to return some jewelry!",
+                    title: "The Lord of the Rings", author: "J.R.R. Tolkien"
+                },
                 {
                     clickbait: "Billionaire throws massive parties to impress his neighbor—you won't believe how it ends!",
                     title: "The Great Gatsby", author: "F. Scott Fitzgerald"
-                },
-                {
-                    clickbait: "Teenage girl volunteers for a televised fight to the death just to save her sister!",
-                    title: "The Hunger Games", author: "Suzanne Collins"
-                },
-                {
-                    clickbait: "College dropout creates a literal monster in his dorm room and immediately runs away!",
-                    title: "Frankenstein", author: "Mary Shelley"
-                },
-                {
-                    clickbait: "Local man gets obsessed with a giant white whale, ruins everyone's fishing trip!",
-                    title: "Moby-Dick", author: "Herman Melville"
                 }
-            ],
-            
-            // State
-            tinderIndex: 0,
-            quizIndex: 0,
-            isTinderFlipped: false,
-            isQuizFlipped: false,
+            ];
 
-            // View Management
-            switchView(viewId) {
-                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-                document.getElementById(viewId).classList.add('active');
-                
-                // Reset states when entering a view
-                if(viewId === 'tinder-view') {
-                    this.tinderIndex = 0;
-                    this.resetFlip('tinder-flipper');
-                    this.isTinderFlipped = false;
-                    this.renderTinder();
-                } else if(viewId === 'quiz-view') {
-                    this.quizIndex = 0;
-                    this.resetFlip('quiz-flipper');
-                    this.isQuizFlipped = false;
-                    this.renderQuiz();
-                }
-            },
+            // --- DOM ELEMENTS ---
+            // Views
+            const homeView = document.getElementById('home-view');
+            const tinderView = document.getElementById('tinder-view');
+            const quizView = document.getElementById('quiz-view');
+            const allViews = [homeView, tinderView, quizView];
 
-            // Tinder Logic
-            renderTinder() {
-                const data = this.tinderData[this.tinderIndex];
-                document.getElementById('t-name').textContent = `${data.name}, ${data.age}`;
-                document.getElementById('t-job').innerHTML = `<i class="fa-solid fa-briefcase mr-2"></i>${data.job}`;
-                document.getElementById('t-bio').textContent = data.bio;
-                document.getElementById('t-redflag').textContent = data.redFlag;
-                document.getElementById('t-title').textContent = data.title;
-                document.getElementById('t-author').textContent = `by ${data.author}`;
-            },
-            tinderAction(type) {
-                // Both Pass and Read reveal the book by flipping the card
-                if (!this.isTinderFlipped) {
-                    document.getElementById('tinder-flipper').classList.add('flipped');
-                    this.isTinderFlipped = true;
-                }
-            },
-            nextTinder() {
-                this.tinderIndex = (this.tinderIndex + 1) % this.tinderData.length;
-                this.cycleCard('tinder-flipper', () => {
-                    this.renderTinder();
-                    this.isTinderFlipped = false;
-                });
-            },
+            // Tinder Elements
+            const tinderFlipper = document.getElementById('tinder-flipper');
+            const tName = document.getElementById('t-name');
+            const tJob = document.getElementById('t-job');
+            const tBio = document.getElementById('t-bio');
+            const tRedflag = document.getElementById('t-redflag');
+            const tTitle = document.getElementById('t-title');
+            const tAuthor = document.getElementById('t-author');
 
-            // Quiz Logic
-            renderQuiz() {
-                const data = this.quizData[this.quizIndex];
-                document.getElementById('q-clickbait').textContent = data.clickbait;
-                document.getElementById('q-title').textContent = data.title;
-                document.getElementById('q-author').textContent = `By ${data.author}`;
-            },
-            toggleQuizFlip() {
-                const flipper = document.getElementById('quiz-flipper');
-                if (this.isQuizFlipped) {
-                    flipper.classList.remove('flipped');
-                } else {
-                    flipper.classList.add('flipped');
-                }
-                this.isQuizFlipped = !this.isQuizFlipped;
-            },
-            nextQuiz() {
-                this.quizIndex = (this.quizIndex + 1) % this.quizData.length;
-                this.cycleCard('quiz-flipper', () => {
-                    this.renderQuiz();
-                    this.isQuizFlipped = false;
-                });
-            },
-            prevQuiz() {
-                this.quizIndex = (this.quizIndex - 1 + this.quizData.length) % this.quizData.length;
-                this.cycleCard('quiz-flipper', () => {
-                    this.renderQuiz();
-                    this.isQuizFlipped = false;
-                });
-            },
+            // Quiz Elements
+            const quizFlipper = document.getElementById('quiz-flipper');
+            const qClickbait = document.getElementById('q-clickbait');
+            const qTitle = document.getElementById('q-title');
+            const qAuthor = document.getElementById('q-author');
 
-            // Shared Animation Logic
-            cycleCard(flipperId, renderCallback) {
-                const flipper = document.getElementById(flipperId);
-                // If it's flipped, we need to hide the flip back so content change isn't awkward
-                if (flipper.classList.contains('flipped')) {
-                    // Temporarily remove transition to snap to front
-                    flipper.classList.add('no-transition');
-                    flipper.classList.remove('flipped');
-                    renderCallback();
-                    
-                    // Force DOM reflow to apply the no-transition class before re-adding transition
-                    void flipper.offsetWidth;
-                    flipper.classList.remove('no-transition');
-                } else {
-                    // Add a tiny shrink animation effect just for tactile feel if not flipped
-                    flipper.style.transform = "scale(0.95)";
-                    setTimeout(() => {
-                        renderCallback();
-                        flipper.style.transform = "scale(1)";
-                    }, 150);
+
+            // --- CORE FUNCTIONS ---
+
+            function switchView(targetView) {
+                // Hide all
+                allViews.forEach(v => v.classList.remove('active'));
+                // Show target
+                targetView.classList.add('active');
+
+                // Reset specific states
+                if (targetView === tinderView) {
+                    state.tinderIndex = 0;
+                    resetFlip(tinderFlipper);
+                    state.isTinderFlipped = false;
+                    renderTinder();
+                } else if (targetView === quizView) {
+                    state.quizIndex = 0;
+                    resetFlip(quizFlipper);
+                    state.isQuizFlipped = false;
+                    renderQuiz();
                 }
-            },
-            resetFlip(flipperId) {
-                const flipper = document.getElementById(flipperId);
-                flipper.classList.add('no-transition');
-                flipper.classList.remove('flipped');
-                flipper.style.transform = "scale(1)";
-                void flipper.offsetWidth;
-                flipper.classList.remove('no-transition');
             }
-        };
 
-        // Initialize on load
-        window.onload = () => {
-            // Preload content
-            app.renderTinder();
-            app.renderQuiz();
-        };
+            function resetFlip(flipperElement) {
+                // Force an instant snap back to the front face without triggering CSS transition
+                flipperElement.classList.add('no-transition');
+                flipperElement.classList.remove('flipped');
+                
+                // Force DOM reflow to apply the class immediately
+                void flipperElement.offsetWidth;
+                
+                flipperElement.classList.remove('no-transition');
+            }
+
+            // --- TINDER LOGIC ---
+            function renderTinder() {
+                const data = tinderData[state.tinderIndex];
+                tName.textContent = `${data.name}, ${data.age}`;
+                tJob.innerHTML = `<i class="fa-solid fa-briefcase mr-2"></i>${data.job}`;
+                tBio.textContent = data.bio;
+                tRedflag.textContent = data.redFlag;
+                tTitle.textContent = data.title;
+                tAuthor.textContent = `by ${data.author}`;
+            }
+
+            function nextTinderCard() {
+                state.tinderIndex = (state.tinderIndex + 1) % tinderData.length;
+                if (state.isTinderFlipped) {
+                    // Snap back to front, change data
+                    resetFlip(tinderFlipper);
+                    state.isTinderFlipped = false;
+                    renderTinder();
+                } else {
+                    // Just change data directly
+                    renderTinder();
+                }
+            }
+
+
+            // --- QUIZ LOGIC ---
+            function renderQuiz() {
+                const data = quizData[state.quizIndex];
+                qClickbait.textContent = `"${data.clickbait}"`;
+                qTitle.textContent = data.title;
+                qAuthor.textContent = `By ${data.author}`;
+            }
+
+            function nextQuizCard() {
+                state.quizIndex = (state.quizIndex + 1) % quizData.length;
+                if (state.isQuizFlipped) {
+                    resetFlip(quizFlipper);
+                    state.isQuizFlipped = false;
+                }
+                renderQuiz();
+            }
+
+            function prevQuizCard() {
+                state.quizIndex = (state.quizIndex - 1 + quizData.length) % quizData.length;
+                if (state.isQuizFlipped) {
+                    resetFlip(quizFlipper);
+                    state.isQuizFlipped = false;
+                }
+                renderQuiz();
+            }
+
+            function toggleQuizFlip() {
+                if (state.isQuizFlipped) {
+                    quizFlipper.classList.remove('flipped');
+                } else {
+                    quizFlipper.classList.add('flipped');
+                }
+                state.isQuizFlipped = !state.isQuizFlipped;
+            }
+
+
+            // --- EVENT LISTENERS ---
+            
+            // Navigation
+            document.getElementById('btn-home-tinder').addEventListener('click', () => switchView(tinderView));
+            document.getElementById('btn-home-quiz').addEventListener('click', () => switchView(quizView));
+            document.getElementById('btn-tinder-back').addEventListener('click', () => switchView(homeView));
+            document.getElementById('btn-quiz-back').addEventListener('click', () => switchView(homeView));
+
+            // Tinder Controls
+            document.getElementById('btn-tinder-left').addEventListener('click', () => {
+                // Swipe Left: Just moves to next card
+                nextTinderCard();
+            });
+            
+            document.getElementById('btn-tinder-right').addEventListener('click', () => {
+                // Swipe Right: Flips card to reveal
+                if (!state.isTinderFlipped) {
+                    tinderFlipper.classList.add('flipped');
+                    state.isTinderFlipped = true;
+                }
+            });
+
+            document.getElementById('btn-tinder-next').addEventListener('click', () => {
+                // Next Arrow: Moves to next card
+                nextTinderCard();
+            });
+
+            // Quiz Controls
+            document.getElementById('btn-quiz-prev').addEventListener('click', prevQuizCard);
+            document.getElementById('btn-quiz-next').addEventListener('click', nextQuizCard);
+            document.getElementById('btn-quiz-reveal').addEventListener('click', toggleQuizFlip);
+        });
     </script>
 </body>
 </html>
